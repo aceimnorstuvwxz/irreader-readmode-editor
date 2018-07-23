@@ -1,0 +1,43 @@
+{
+  "name": "irreader-readmode-editor",
+  "version": "0.0.1",
+  "productName": "irreader-readmode-editor",
+  "description": "Read mode rule editor for irreader beta",
+  "main": "main.js",
+  "build": {
+    "appId": "com.netqon.irreader-readmode-editor",
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis",
+      "extraFiles": "*.dll"
+    }
+  },
+  "repository": "https://github.com/fateleak/irreader-readmode-editor",
+  "keywords": [
+    "Netqon",
+    "BoringUniverse",
+    "irreader",
+    "fateleak"
+  ],
+  "author": "netqon.com",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "install-app-deps",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "electron-store": "^1.3.0",
+    "get-favicons": "^1.0.0",
+    "request": "^2.85.0",
+    "sqlite3": "^3.1.13"
+  },
+  "devDependencies": {
+    "electron": "^2.0.0",
+    "electron-builder": "~20.17.0"
+  }
+}
