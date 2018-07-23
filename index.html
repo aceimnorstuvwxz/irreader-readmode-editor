@@ -20,25 +20,33 @@
   <div id="window_header" class="drag">
     <div id="head_left" class="head_segments">
       <input type="text" id="input_search" />
-      <a class="my-btn" id="btn_search" title="search">
+      <a class="my-btn" id="btn_search" title="搜索"">
         search
       </a>
     </div>
     <div id="head_middle" class="head_segments">
-        <a class="my-btn" id="btn_back" title="search">
-            back
-          </a>
+      <a class="my-btn" id="btn_back" title="search">
+        back
+      </a>
       <input type="text" id="input_address" class="flex-push" />
-      <a class="my-btn btn_reload"  title="search">
+      <a class="my-btn btn_reload" title="加载">
         reload
       </a>
-      <a class="my-btn" id="btn_devtool" title="search">
+      <a class="my-btn" id="btn_devtool" title="打开开发者工具">
         source
       </a>
       <div id="note"></div>
     </div>
 
     <div id="head_right" class="head_segments">
+
+      <a class="my-btn" id="btn_sync_address" title="从地址栏更新">
+        auto fill
+      </a>
+
+      <a class="my-btn" id="btn_export" title="从地址栏更新">
+          export
+        </a>
     </div>
   </div>
   <!-- head end -->
@@ -52,24 +60,31 @@
     </div>
 
     <div id="domain_space" style="padding: 10px;">
-      domain:<input type="text" id="input_domain" style="width: 100%" >
-      test url:<textarea type="text" id="input_test_url" style="width: 100%; height: 50px;" ></textarea>
-      css override:<textarea id="input_css" style="height: 50%; width: 100%;"></textarea>
+      domain:
+      <input type="text" id="input_domain" style="width: 100%"> test url:
+      <textarea type="text" id="input_test_url" style="width: 100%; height: 50px;"></textarea> css override:
+      <textarea id="input_css" style="height: 50%; width: 100%;"></textarea>
 
       <a class="my-btn btn_reload" title="search">
-          reload
-        </a>
-        <a class="my-btn" id="btn_inject" title="search">
-            inject
-          </a>
-          <a class="my-btn" id="btn_save" title="search">
-              save
-            </a>
-            <a class="my-btn" id="btn_delete" title="search">
-                delete
-              </a>
+        reload
+      </a>
+      <a class="my-btn" id="btn_inject" title="search">
+        inject
+      </a>
+      <a class="my-btn" id="btn_save" title="search">
+        save
+      </a>
+      <a class="my-btn" id="btn_delete" title="search">
+        delete
+      </a>
     </div>
 
+  </div>
+
+  <div id="templates">
+    <div class="record" id="record_template">
+      <div class="record-domain"></div>
+    </div>
   </div>
 
 </body>

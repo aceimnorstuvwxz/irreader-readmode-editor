@@ -1,4 +1,3 @@
-const sqlite3 = require('sqlite3').verbose()
 const electron = require('electron')
 const { app, BrowserWindow, Menu, ipcMain, globalShortcut, crashReporter } = electron;
 const utils = require('./utils')
@@ -8,19 +7,10 @@ const store = new Store()
 const path = require('path')
 const urllib = require('url')
 const fs = require('fs')
-
-let g_config_cache = null
-
-g_config_cache = store.get('config', {
-  notify_change: true,
-  notify_exception: true,
-  notify_recovery: true,
-  check_interval: 'B',
-  launch_at_login: true,
-  proxy: ''
-})
-
+const db = require('./db')
 console.log('userData=', app.getPath('userData'))
+
+db.database_init()
 
 app.on('ready', function () {
   createMainWindow()//启动后，并不打开主窗口
@@ -171,7 +161,7 @@ function get_menu_template() {
     )
   }
 
-  if (utils.is_dev()) {
+  if (utils.is_dev) {
     menuTemplate.push({
       label: 'Dev',
       submenu: [
@@ -237,5 +227,19 @@ function createMainWindow() {
     mainWindow.show()
   }
 
-
 }
+
+ipcMain.on('save-record', (event, record)=>{
+  console.log('save-record', record)
+  db.save_or_update_record(record)
+})
+
+ipcMain.on('delete-record', (event, domain)=>{
+  db.delete_record(domain)
+})
+
+ipcMain.on('get-some-records', (event, data)=>{
+  db.get_some_records(data.offset, data.query, function (records) {
+    main_utils.notify_all_windows('some-records', records)
+  })
+})
