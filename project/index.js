@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   $('.btn_reload').click(() => {
-    $('#webview').get(0).loadURL($('#input_address').val())
+    on_click_reload()
   })
 
   $('#btn_back').click(() => {
@@ -47,19 +47,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
   get_some_records()
 
-  $('#btn_search').click(()=>{
+  $('#btn_search').click(() => {
     g_record_no_more = false
     $('#record_space').empty()
     g_record_element_map = {}
     get_some_records()
   })
 
-  $('#btn_sync_address').click(update_from_address)
+  $('.btn_sync_address').click(update_from_address)
 
   $('#btn_export').click(on_click_export)
 
-  
+  $('#input_address').get(0).addEventListener("keyup", function (event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+      on_click_reload()
+    }
+  })
 })
+
+function on_click_reload() {
+  let address_text = $('#input_address').val()
+
+  if (!address_text.includes('://')) {
+    address_text = "http://" + address_text
+  }
+
+  $('#input_address').val(address_text)
+  $('#webview').get(0).loadURL(address_text)
+}
 
 
 function get_some_records() {
@@ -106,7 +122,7 @@ function init_webview() {
     console.log(event)
     $('#input_address').val(event.url)
   })
-  web_raw.addEventListener('new-window', (event)=>{
+  web_raw.addEventListener('new-window', (event) => {
     $('#webview').get(0).loadURL(event.url)
   })
   // web_raw.addEventListener('will-download', on_webview_will_download.bind(null, web))
@@ -139,7 +155,7 @@ function init_domain_area() {
     })
   })
 
-  $('#btn_delete').dblclick(()=>{
+  $('#btn_delete').dblclick(() => {
     console.log('delete')
     electron.ipcRenderer.send('delete-record', $('#input_domain').val().trim())
   })
@@ -172,7 +188,7 @@ electron.ipcRenderer.on('new-record', (event, record) => {
   add_new_record_element(record, true)
 })
 
-electron.ipcRenderer.on('update-record', (event, record)=>{
+electron.ipcRenderer.on('update-record', (event, record) => {
   g_record_data_map.set(record.domain, record)
 })
 
@@ -218,26 +234,26 @@ function on_click_export() {
 }
 
 function remove_new_line(text) {
-  return text.replace(/(\r\n\t|\n|\r\t)/gm,'')
+  return text.replace(/(\r\n\t|\n|\r\t)/gm, '')
 }
 
-electron.ipcRenderer.on('export-records', (event, records)=>{
+electron.ipcRenderer.on('export-records', (event, records) => {
   if (g_export_path) {
     console.log('export', records.length)
     note('start exporting')
     let lines = []
-    records.forEach((record)=>{
+    records.forEach((record) => {
       let record_line = `${record.domain.trim()}##${record.css.trim()}`
       record_line = remove_new_line(record_line)
       lines.push(record_line)
     })
-    fs.writeFile(g_export_path, lines.join('\n'), ()=>{
+    fs.writeFile(g_export_path, lines.join('\n'), () => {
       alert('Exported to' + g_export_path)
     })
   }
 })
 
-electron.ipcRenderer.on('delete-record', (event, domain)=>{
+electron.ipcRenderer.on('delete-record', (event, domain) => {
   g_record_data_map.delete(domain)
   g_record_element_map[domain].remove()
 })
