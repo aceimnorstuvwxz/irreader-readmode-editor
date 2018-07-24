@@ -1,5 +1,6 @@
-const electron = require('electron');
-const path = require('path');
+const electron = require('electron')
+const dialog = electron.remote.dialog
+const path = require('path')
 const locale = require('./locale')
 const utils = require('./utils')
 const { remote } = require('electron')
@@ -7,6 +8,8 @@ const { Menu, MenuItem } = remote
 const Store = require('electron-store')
 const store = new Store()
 const urllib = require('url')
+const fs = require('fs')
+
 
 document.addEventListener('DOMContentLoaded', function () {
   console.log("init window")
@@ -51,9 +54,9 @@ document.addEventListener('DOMContentLoaded', function () {
     get_some_records()
   })
 
-  $('#btn_sync_address').click(()=>{
-    update_from_address()
-  })
+  $('#btn_sync_address').click(update_from_address)
+
+  $('#btn_export').click(on_click_export)
 })
 
 
@@ -162,6 +165,10 @@ electron.ipcRenderer.on('new-record', (event, record) => {
   add_new_record_element(record, true)
 })
 
+electron.ipcRenderer.on('update-record', (event, record)=>{
+  g_record_data_map.set(record.domain, record)
+})
+
 let g_record_no_more = false
 electron.ipcRenderer.on('some-records', function (e, records) {
   console.log('all records', records)
@@ -186,3 +193,35 @@ function on_click_record(domain) {
     $('#input_css').val(record.css)
   }
 }
+
+function get_month_date() {
+  let date = new Date()
+  return `${date.getMonth() + 1}-${date.getDate()}`
+}
+
+let g_export_path = null
+function on_click_export() {
+  dialog.showSaveDialog(
+    { defaultPath: `irreader-readmode-rules-${get_month_date()}.txt` },
+    (filename) => {
+      console.log('write opml to', filename)
+      g_export_path = filename
+      electron.ipcRenderer.send('get-export-records')
+    })
+}
+
+electron.ipcRenderer.on('export-records', (event, records)=>{
+  if (g_export_path) {
+    console.log('export', records.length)
+    note('start exporting')
+    let lines = []
+    records.forEach((record)=>{
+      let record_line = `${record.domain.trim()}##${record.css.trim()}`
+      record_line = record_line.replace(/(\r\n\t|\n|\r\t)/gm,'')
+      lines.push(record_line)
+    })
+    fs.writeFile(g_export_path, lines.join('\n'), ()=>{
+      alert('Exported to' + g_export_path)
+    })
+  }
+})

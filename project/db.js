@@ -106,3 +106,20 @@ exports.get_some_records = (offset, query, cb) => {
         })
     })
 }
+
+exports.get_all_records = (cb) => {
+
+    g_db.serialize(function () {
+        let sql = `SELECT  * 
+        FROM record `;
+
+        g_db.all(sql, [], (err, rows) => {
+            if (err) {
+                throw err;
+            }
+            if (cb) {
+                cb(rows)
+            }
+        })
+    })
+}

@@ -243,3 +243,10 @@ ipcMain.on('get-some-records', (event, data)=>{
     main_utils.notify_all_windows('some-records', records)
   })
 })
+
+
+ipcMain.on('get-export-records', (event, data)=>{
+  db.get_all_records(function(records){
+    main_utils.notify_all_windows('export-records', records)
+  })
+})
