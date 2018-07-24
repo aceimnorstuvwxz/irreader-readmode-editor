@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', function () {
   $('#btn_sync_address').click(update_from_address)
 
   $('#btn_export').click(on_click_export)
+
+  
 })
 
 
@@ -124,7 +126,7 @@ function update_from_address() {
 
 function init_domain_area() {
   $('#btn_inject').click(() => {
-    $('#webview').get(0).insertCSS($('#input_css').val())
+    $('#webview').get(0).insertCSS(remove_new_line($('#input_css').val()))
   })
 
   $('#btn_save').click(() => {
@@ -135,6 +137,11 @@ function init_domain_area() {
       date: new Date().getTime(),
       extra: ''
     })
+  })
+
+  $('#btn_delete').dblclick(()=>{
+    console.log('delete')
+    electron.ipcRenderer.send('delete-record', $('#input_domain').val().trim())
   })
 }
 
@@ -210,6 +217,10 @@ function on_click_export() {
     })
 }
 
+function remove_new_line(text) {
+  return text.replace(/(\r\n\t|\n|\r\t)/gm,'')
+}
+
 electron.ipcRenderer.on('export-records', (event, records)=>{
   if (g_export_path) {
     console.log('export', records.length)
@@ -217,11 +228,16 @@ electron.ipcRenderer.on('export-records', (event, records)=>{
     let lines = []
     records.forEach((record)=>{
       let record_line = `${record.domain.trim()}##${record.css.trim()}`
-      record_line = record_line.replace(/(\r\n\t|\n|\r\t)/gm,'')
+      record_line = remove_new_line(record_line)
       lines.push(record_line)
     })
     fs.writeFile(g_export_path, lines.join('\n'), ()=>{
       alert('Exported to' + g_export_path)
     })
   }
+})
+
+electron.ipcRenderer.on('delete-record', (event, domain)=>{
+  g_record_data_map.delete(domain)
+  g_record_element_map[domain].remove()
 })

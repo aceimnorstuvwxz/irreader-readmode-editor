@@ -80,6 +80,8 @@ exports.delete_record = (domain) => {
             function (err) {
                 if (err) {
                     console.error(err.message)
+                }else {
+                    main_utils.notify_all_windows('delete-record', domain)
                 }
             })
     })
