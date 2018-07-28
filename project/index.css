@@ -228,4 +228,5 @@ select[disabled="disabled"]{
 
 input, textarea{
     font-size: 14px;
+    overflow:scroll;
 }
