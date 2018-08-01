@@ -16,9 +16,6 @@ next.36kr.com##css内容
 - https://hot.cnbeta.com/articles/funny/749733
 
 
-用此工具维护的规则repo：
-
-https://github.com/fateleak/irreader-readmode-rules
 
 
 (C) 2018 netqon.com
